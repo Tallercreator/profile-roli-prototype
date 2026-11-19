@@ -57,6 +57,12 @@ dialog{border:0;padding:0;border-radius:20px;max-width:calc(100vw - 32px);max-he
 .panel-head .role-request-title{font-family:Squad,Source,Arial,sans-serif;font-size:40px;line-height:44px;font-weight:600;color:#151617;overflow-wrap:anywhere}
 .panel-head .role-request-title .title-note{display:inline;color:#525252}
 .recipient-field{min-width:0}
+/* Hover hint above the role-profile document button. */
+.hint-wrap{position:relative;display:inline-flex}
+.hint{position:absolute;left:50%;bottom:calc(100% + 14px);transform:translateX(-50%);padding:14px 24px;border-radius:20px;background:#fff;color:#151617;font-size:18px;line-height:24px;font-weight:400;white-space:nowrap;box-shadow:0 8px 32px #18284224;opacity:0;visibility:hidden;pointer-events:none;z-index:30}
+.hint:after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:8px solid transparent;border-top-color:#fff}
+.hint-wrap:hover .hint,.hint-wrap:focus-within .hint{opacity:1;visibility:visible}
+.hint-wrap.menu-open .hint{display:none}
 /* November 19 design update: notice above general information and info icon at the position field. */
 .role-notice{display:flex;align-items:center;gap:12px;max-width:653px;padding:12px;margin-bottom:32px;border-radius:16px;background:#f6f7fa}
 .role-notice-icon{width:32px;height:32px;flex-shrink:0;border-radius:8px;background:#fae1db;display:flex;align-items:center;justify-content:center}
@@ -319,7 +325,7 @@ function requestTitle(r){return r.id==='mass'?'Изменение типовог
 
 function copyField(r,approver=false){const on=approver?r.approverCopy:r.copy;return `<div class="copy-field"><label class="checkline"><input id="${approver?'approverCopyToggle':'copyToggle'}" type="checkbox" ${on?'checked':''} aria-labelledby="${approver?'approver-copy-label':'copy-label'}" aria-describedby="${approver?'approver-copy-hint':'copy-hint'}"><span class="copy-label-block"><span id="${approver?'approver-copy-label':'copy-label'}">Скопировать другой профиль роли</span><span class="copy-hint" id="${approver?'approver-copy-hint':'copy-hint'}">Ты можешь выбрать профиль роли сотрудника<br>на аналогичной позиции для примера</span></span></label>${on?picker('source',r.source):''}</div>`;}
 
-function profileDoc(p){return `<span class="profile-doc">${icon('document','personMenu','Профиль роли: '+p.name,'data-id="'+p.id+'"','soft')}${S.personMenu===p.id?profileMenu(p):''}</span>`;}
+function profileDoc(p){const open=S.personMenu===p.id;return `<span class="profile-doc"><span class="hint-wrap ${open?'menu-open':''}"><button type="button" class="icon soft" data-action="personMenu" data-id="${p.id}" aria-label="${esc('Профиль роли: '+p.name)}" aria-expanded="${open}">${image('document',24)}</button><span class="hint" role="tooltip" aria-hidden="true">Профиль роли</span></span>${open?profileMenu(p):''}</span>`;}
 
 function profileMenu(p){return `<div class="profile-menu">${p.vacant?`<button data-action="structureCreate" data-id="${p.id}">${image('previous',16)}Создать профиль роли</button>`:[['Посмотреть','eyeSmall','view'],['Редактировать','edit','edit'],['Скопировать','copy','copy']].map(([t,i,a])=>`<button data-action="structureAction" data-kind="${a}" data-id="${p.id}">${image(i,16)}${t}</button>`).join('')}</div>`;}
 </script></body></html>
